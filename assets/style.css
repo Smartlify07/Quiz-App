@@ -15,6 +15,7 @@
 
 body {
   font-family: var(--font-family);
+  font-size: 16px;
 }
 
 main {
@@ -117,7 +118,7 @@ a {
   color: var(--white);
   padding: 1.1rem 1.4rem;
   transition: all 0.1s;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .question-wrapper ul li:hover {
