@@ -39,15 +39,14 @@ const questions = [
   },
 ];
 
-
 // Quiz data
 const quizData = [
   {
-      question: "Question1",
-      choices: ["Choice A", "Choice B", "Choice C", "Choice D"],
-      correctAnswerIndex : // Provide the index of correct answer in choices array.
+    question: "Question1",
+    choices: ["Choice A", "Choice B", "Choice C", "Choice D"],
+    correctAnswerIndex: "",
   },
-  
+
   // Add more questions here...
 ];
 
@@ -55,64 +54,64 @@ let currentQuestion = -1;
 
 function loadNextQuestion() {
   currentQuestion++;
-  
-  if(currentQuestion >= quizData.length) {
-     showResult();
-     return;
-   }
 
-   const questionElement = document.getElementById("question");
-   const choicesElement = document.getElementById("choices");
+  if (currentQuestion >= quizData.length) {
+    showResult();
+    return;
+  }
 
-   questionElement.innerHTML = quizData[currentQuestion].question;
+  const questionElement = document.getElementById("question");
+  const choicesElement = document.getElementById("choices");
 
-   // Clear previous choices from the list
-   while(choicesElement.firstChild) {   
-       choicesElement.removeChild(choicesElement.firstChild);
-    }
+  questionElement.innerHTML = quizData[currentQuestion].question;
 
-    // Add new choices to the list
-    for(let i=0;i<quizData[currentQuestion].choices.length;i++) {   
-        const listItem = document.createElement("li");
-        listItem.innerHTML = quizData[currentQuestion].choices[i];
-        
-        listItem.addEventListener("click", handleAnswer);
-        
-        choicesElement.appendChild(listItem);
-     }
+  // Clear previous choices from the list
+  while (choicesElement.firstChild) {
+    choicesElement.removeChild(choicesElement.firstChild);
+  }
+
+  // Add new choices to the list
+  for (let i = 0; i < quizData[currentQuestion].choices.length; i++) {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = quizData[currentQuestion].choices[i];
+
+    listItem.addEventListener("click", handleAnswer);
+
+    choicesElement.appendChild(listItem);
+  }
 }
-
 
 function handleAnswer(event) {
+  const selectedOptionText = event.target.innerHTML;
 
-const selectedOptionText=event.target.innerHTML;
+  const resultMessage = document.getElementById("result");
 
-const resultMessage=document.getElementById('result');
-
-if(selectedOptionText===quizData[currentQuestion].choices[quizData[currentQuestion].correctAnswerIndex]){
-  resultMessage.textContent='Correct!';
-}else{
-  resultMessage.textContent='Incorrect!';
-}
-setTimeout(()=>{	
-    resultMessage.textContent='';
+  if (
+    selectedOptionText ===
+    quizData[currentQuestion].choices[
+      quizData[currentQuestion].correctAnswerIndex
+    ]
+  ) {
+    resultMessage.textContent = "Correct!";
+  } else {
+    resultMessage.textContent = "Incorrect!";
+  }
+  setTimeout(() => {
+    resultMessage.textContent = "";
     loadNextQuestion();
-},1000); 
-
+  }, 1000);
 }
 
+function showResult() {
+  const submitButton = document.getElementById("submit-btn");
+  submitButton.style.display = "none";
 
-function showResult(){
-const submitButton=document.getElementById('submit-btn');
-submitButton.style.display='none';
-  
-const container=document.getElementById('quiz-container');
-container.style.textAlign='center';
-container.innerHTML='<h2>Congratulations! You have completed the quiz.</h2>';
+  const container = document.getElementById("quiz-container");
+  container.style.textAlign = "center";
+  container.innerHTML =
+    "<h2>Congratulations! You have completed the quiz.</h2>";
 
-//You can add high scores/score sheet elements here
-
+  //You can add high scores/score sheet elements here
 }
-
 
 loadNextQuestion();
