@@ -41,22 +41,13 @@ const questions = [
 
 
 // Quiz data
-const quizData = [
-  {
-      question: "Question1",
-      choices: ["Choice A", "Choice B", "Choice C", "Choice D"],
-      correctAnswerIndex : // Provide the index of correct answer in choices array.
-  },
-  
-  // Add more questions here...
-];
 
 let currentQuestion = -1;
 
 function loadNextQuestion() {
   currentQuestion++;
   
-  if(currentQuestion >= quizData.length) {
+  if(currentQuestion >= questions.length) {
      showResult();
      return;
    }
@@ -64,7 +55,7 @@ function loadNextQuestion() {
    const questionElement = document.getElementById("question");
    const choicesElement = document.getElementById("choices");
 
-   questionElement.innerHTML = quizData[currentQuestion].question;
+   questionElement.innerHTML = questions[currentQuestion].question;
 
    // Clear previous choices from the list
    while(choicesElement.firstChild) {   
@@ -72,9 +63,9 @@ function loadNextQuestion() {
     }
 
     // Add new choices to the list
-    for(let i=0;i<quizData[currentQuestion].choices.length;i++) {   
+    for(let i=0;i<questions[currentQuestion].choices.length;i++) {   
         const listItem = document.createElement("li");
-        listItem.innerHTML = quizData[currentQuestion].choices[i];
+        listItem.innerHTML = questions[currentQuestion].choices[i];
         
         listItem.addEventListener("click", handleAnswer);
         
@@ -104,15 +95,61 @@ setTimeout(()=>{
 
 function showResult(){
 const submitButton=document.getElementById('submit-btn');
-submitButton.style.display='none';
+submitButton.style.display='block';
   
 const container=document.getElementById('quiz-container');
 container.style.textAlign='center';
 container.innerHTML='<h2>Congratulations! You have completed the quiz.</h2>';
 
-//You can add high scores/score sheet elements here
+container.scrollIntoView({ behavior:'smooth' });  
+
+ let scoresTable = document.getElementById("scores-table");
+
+ // Display high scores/score sheet elements
+
+ // Create table header row       
+ let headerRow = document.createElement("tr");
+        
+ let thName = document.createElement("th");   
+ thName.textContent ='Name';                 
+ headerRow.appendChild(thName);
+
+ let thScore = document.createElement("th");    
+ thScore.textContent ='Score';                  
+ headerRow.appendChild(thScore);
+
+ scoresTable.appendChild(headerRow);
+
+ // Simulate fetching high scores from an API or storage
+   
+ // Mock data - Scores array containing objects with name and score
+  
+const randomScores=[{ name:'John',score:'2/3'},
+{name:'Sarah',score:'3/3'},           
+{name:'Mike',score:'1/3'}];
+
+randomScores.forEach(score => {
+
+let row=document.createElement('tr');
+
+let tdName=document.createElement('td');          
+tdName.textContent=`${score.name}`;
+
+
+row.appendChild(tdName);
+
+let tdScore=document.createElement('td');         
+tdScore.textContent=`${score.score}`;
+
+
+
+row.appendChild(tdScore);
+
+
+scoresTable.appendChild(row);    
+
+});
 
 }
-
-
+loadNextQuestion();
 loadNextQuestion();
