@@ -1,11 +1,13 @@
 const questions = [
   {
-    questionText: "Commonly used data types DO NOT include:",
+    questionText:
+      "Commonly used data types DO NOT include:",
     options: ["1. strings", "2. booleans", "3. alerts", "4. numbers"],
     answer: "3. alerts",
   },
   {
-    questionText: "Arrays in JavaScript can be used to store ______.",
+    questionText: 
+      "Arrays in JavaScript can be used to store ______.",
     options: [
       "1. numbers and strings",
       "2. other arrays",
@@ -42,10 +44,11 @@ const questions = [
 
 // Quiz data
 
-let currentQuestion = -1;
+let currentQuestion = 0;
+const qwcElement = document.querySelector("#qwc")
 
 function loadNextQuestion() {
-  currentQuestion++;
+  //currentQuestion++;
   
   if(currentQuestion >= questions.length) {
      showResult();
@@ -55,7 +58,7 @@ function loadNextQuestion() {
    const questionElement = document.getElementById("question");
    const choicesElement = document.getElementById("choices");
 
-   questionElement.innerHTML = questions[currentQuestion].question;
+   questionElement.innerHTML = questions[currentQuestion].questionText;
 
    // Clear previous choices from the list
    while(choicesElement.firstChild) {   
@@ -63,16 +66,36 @@ function loadNextQuestion() {
     }
 
     // Add new choices to the list
-    for(let i=0;i<questions[currentQuestion].choices.length;i++) {   
+    for(let i=0;i<questions[currentQuestion].options.length;i++) {   
         const listItem = document.createElement("li");
-        listItem.innerHTML = questions[currentQuestion].choices[i];
+        listItem.innerHTML = questions[currentQuestion].options[i];
         
         listItem.addEventListener("click", handleAnswer);
         
         choicesElement.appendChild(listItem);
      }
 }
+function loadQuestions() {
+  for (let question of questions ){
+    const {questionText,options, } = question;
+    const html= ` <li class="splide__slide">
+    <div class="question-wrapper">
 
+    <p id="question">${ questionText}_____.</p>
+
+    <ul id="choices">
+     ${options.map((option) =>{
+      return `<li>${option}</li>`
+     })}
+    </ul>
+  </div>
+  </li>
+`
+qwcElement.insertAdjacentHTML('beforeend',html)
+ const questionSlide = new Splide( '.splide' ).mount();
+ questionSlide.mo
+  }
+}
 
 function handleAnswer(event) {
 
@@ -80,7 +103,7 @@ const selectedOptionText=event.target.innerHTML;
 
 const resultMessage=document.getElementById('result');
 
-if(selectedOptionText===quizData[currentQuestion].choices[quizData[currentQuestion].correctAnswerIndex]){
+if(selectedOptionText===questions[currentQuestion].options[questions[currentQuestion].correctAnswerIndex]){
   resultMessage.textContent='Correct!';
 }else{
   resultMessage.textContent='Incorrect!';
@@ -151,5 +174,6 @@ scoresTable.appendChild(row);
 });
 
 }
-loadNextQuestion();
-loadNextQuestion();
+loadQuestions(
+
+);
