@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -35,6 +35,96 @@
           </div>
         </div>
       </div>
+
+      <script>
+        var Countdown = function(elem, options) {
+            var timer = createTimer(),
+                startButton = document.getElementById("startButton"),
+                subtractButton = document.getElementById("subtractButton"),
+                offset,
+                clock,
+                interval;
+
+            // Default options
+            options = options || {};
+            options.delay = options.delay || 1000; // 1000 milliseconds = 1 second
+
+            // Append elements
+            elem.appendChild(timer);
+
+            // Initialize
+            reset();
+
+            // Private functions
+            function createTimer() {
+                return document.createElement("span");
+            }
+
+            function start() {
+                if (!interval) {
+                    offset = Date.now();
+                    interval = setInterval(update, options.delay);
+                }
+            }
+
+            function reset() {
+                clock = 50 * 1000; // 50 seconds in milliseconds
+                render(clock);
+            }
+
+            function update() {
+                clock -= options.delay;
+                if (clock <= 0) {
+                    clock = 0;
+                    stop();
+                    redirect();
+                }
+                render(clock);
+            }
+
+            function stop() {
+                if (interval) {
+                    clearInterval(interval);
+                    interval = null;
+                }
+            }
+
+            function render(time) {
+                var seconds = Math.floor(time / 1000);
+                timer.innerHTML = seconds;
+            }
+
+            function redirect() {
+                window.location.href = "https://www.example.com"; // Change to your desired URL
+            }
+
+            // Subtract 10 seconds function
+            subtractButton.addEventListener("click", function() {
+                clock -= 10 * 1000; // Subtract 10 seconds in milliseconds
+                if (clock < 0) {
+                    clock = 0;
+                    stop();
+                    redirect();
+                }
+                render(clock);
+            });
+
+            // Start button event listener
+            startButton.addEventListener("click", function() {
+                start();
+            });
+
+            // Public API
+            this.start = start;
+            this.reset = reset;
+        };
+
+        // Create countdown instances
+        var elems = document.getElementsByClassName("countdown");
+        for (var i = 0; i < elems.length; i++) {
+            new Countdown(elems[i]);
+        }
+      </script>
     </main>
   </body>
 </html>
