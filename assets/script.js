@@ -1,3 +1,20 @@
+let swiper;
+let duration = 51;
+let durationTime  = 5000;
+
+const timerElement = document.getElementById("timer");
+const intervalID = setInterval(function() {
+  duration--;
+  timerElement.innerHTML = duration;
+  if (duration <= 0) {
+    clearInterval(intervalID);
+    showResults();
+  }
+}, 1000);
+
+
+
+
 const questions = [
   {
     questionText:
@@ -6,7 +23,7 @@ const questions = [
     answer: "3. alerts",
   },
   {
-    questionText: 
+    questionText:
       "Arrays in JavaScript can be used to store ______.",
     options: [
       "1. numbers and strings",
@@ -42,138 +59,143 @@ const questions = [
 ];
 
 
+
+
 // Quiz data
 
 let currentQuestion = 0;
 const qwcElement = document.querySelector("#qwc")
-
-function loadNextQuestion() {
-  //currentQuestion++;
-  
-  if(currentQuestion >= questions.length) {
-     showResult();
-     return;
-   }
-
-   const questionElement = document.getElementById("question");
-   const choicesElement = document.getElementById("choices");
-
-   questionElement.innerHTML = questions[currentQuestion].questionText;
-
-   // Clear previous choices from the list
-   while(choicesElement.firstChild) {   
-       choicesElement.removeChild(choicesElement.firstChild);
-    }
-
-    // Add new choices to the list
-    for(let i=0;i<questions[currentQuestion].options.length;i++) {   
-        const listItem = document.createElement("li");
-        listItem.innerHTML = questions[currentQuestion].options[i];
-        
-        listItem.addEventListener("click", handleAnswer);
-        
-        choicesElement.appendChild(listItem);
-     }
-}
 function loadQuestions() {
-  for (let question of questions ){
-    const {questionText,options, } = question;
-    const html= ` <li class="splide__slide">
+  for (let question of questions) {
+    const { questionText, options, } = question;
+    const html = ` <li class="swiper-slide">
     <div class="question-wrapper">
 
-    <p id="question">${ questionText}_____.</p>
+    <p id="question">${questionText}_____.</p>
 
     <ul id="choices">
-     ${options.map((option) =>{
+     ${options.map((option) => {
       return `<li>${option}</li>`
-     })}
+    }).join('')}}
     </ul>
   </div>
   </li>
 `
-qwcElement.insertAdjacentHTML('beforeend',html)
- const questionSlide = new Splide( '.splide' ).mount();
- questionSlide.mo
+    qwcElement.insertAdjacentHTML('beforeend', html)
+    swiper = new Swiper('.swiper', {
+      // Optional parameters
+      speed: 400,
+      // navigation: {
+      //   nextEl: '.swiper-button-next',
+      //   prevEl: '.swiper-button-prev',
+      // },
+    });
+  }
+  // const listItem = document.innerHTML("li");
+  // listItem.addEventListener("click", handleAnswer)
+}
+function nextQuestion() {
+  if (swiper){
+    swiper.slideNext();
+    
   }
 }
+function checkAnswer(){
+  const HTMLquestions = document.querySelectorAll(".question-wrapper");
+  HTMLquestions.forEach(function(question, index){
+    question.addEventListener("click", function(event) {
 
+      const selectedOption = event.target;
+      if (selectedOption.tagName==="LI") {
+        const selectedOptionText = selectedOption.innerHTML; 
+        const answerText = questions[index].answer;
+        if (selectedOptionText === answerText) {
+          nextQuestion()
+        } else {
+          duration -= 10;
+          nextQuestion()
+        }
+      }
+    
+    });
+
+  })
+}
 function handleAnswer(event) {
 
-const selectedOptionText=event.target.innerHTML;
+  const selectedOptionText = event.target.innerHTML;
+  const resultMessage = document.getElementById('result');
 
-const resultMessage=document.getElementById('result');
-
-if(selectedOptionText===questions[currentQuestion].options[questions[currentQuestion].correctAnswerIndex]){
-  resultMessage.textContent='Correct!';
-}else{
-  resultMessage.textContent='Incorrect!';
-}
-setTimeout(()=>{	
-    resultMessage.textContent='';
+  if (selectedOptionText === questions[currentQuestion].options[questions[currentQuestion].correctAnswerIndex]) {
+    resultMessage.textContent = 'Correct!';
+  } else {
+    resultMessage.textContent = 'Incorrect!';
+  }
+  setTimeout(() => {
+    resultMessage.textContent = '';
     loadNextQuestion();
-},1000); 
+  }, 1000);
 
 }
 
 
-function showResult(){
-const submitButton=document.getElementById('submit-btn');
-submitButton.style.display='block';
-  
-const container=document.getElementById('quiz-container');
-container.style.textAlign='center';
-container.innerHTML='<h2>Congratulations! You have completed the quiz.</h2>';
+function showResult() {
+  const submitButton = document.getElementById('submit-btn');
+  submitButton.style.display = 'block';
 
-container.scrollIntoView({ behavior:'smooth' });  
+  const container = document.getElementById('quiz-container');
+  container.style.textAlign = 'center';
+  container.innerHTML = '<h2>Congratulations! You have completed the quiz.</h2>';
 
- let scoresTable = document.getElementById("scores-table");
+  container.scrollIntoView({ behavior: 'smooth' });
 
- // Display high scores/score sheet elements
+  let scoresTable = document.getElementById("scores-table");
 
- // Create table header row       
- let headerRow = document.createElement("tr");
-        
- let thName = document.createElement("th");   
- thName.textContent ='Name';                 
- headerRow.appendChild(thName);
+  // Display high scores/score sheet elements
 
- let thScore = document.createElement("th");    
- thScore.textContent ='Score';                  
- headerRow.appendChild(thScore);
+  // Create table header row       
+  let headerRow = document.createElement("tr");
 
- scoresTable.appendChild(headerRow);
+  let thName = document.createElement("th");
+  thName.textContent = 'Name';
+  headerRow.appendChild(thName);
 
- // Simulate fetching high scores from an API or storage
-   
- // Mock data - Scores array containing objects with name and score
-  
-const randomScores=[{ name:'John',score:'2/3'},
-{name:'Sarah',score:'3/3'},           
-{name:'Mike',score:'1/3'}];
+  let thScore = document.createElement("th");
+  thScore.textContent = 'Score';
+  headerRow.appendChild(thScore);
 
-randomScores.forEach(score => {
+  scoresTable.appendChild(headerRow);
 
-let row=document.createElement('tr');
+  // Simulate fetching high scores from an API or storage
 
-let tdName=document.createElement('td');          
-tdName.textContent=`${score.name}`;
+  // Mock data - Scores array containing objects with name and score
 
+  const randomScores = [{ name: 'John', score: '2/3' },
+  { name: 'Sarah', score: '3/3' },
+  { name: 'Mike', score: '1/3' }];
 
-row.appendChild(tdName);
+  randomScores.forEach(score => {
 
-let tdScore=document.createElement('td');         
-tdScore.textContent=`${score.score}`;
+    let row = document.createElement('tr');
+
+    let tdName = document.createElement('td');
+    tdName.textContent = `${score.name}`;
 
 
+    row.appendChild(tdName);
 
-row.appendChild(tdScore);
+    let tdScore = document.createElement('td');
+    tdScore.textContent = `${score.score}`;
 
 
-scoresTable.appendChild(row);    
 
-});
+    row.appendChild(tdScore);
+
+
+    scoresTable.appendChild(row);
+
+  });
 
 }
-loadQuestions(
-
-);
+loadQuestions();
+checkAnswer();
