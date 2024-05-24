@@ -18,23 +18,69 @@
       <h4>Time</h4>
     </header>
     <main>
-      <div class="score-container">
-        <div class="score">
-          <div class="score-h1">
-            <h1><strong>All done!</strong></h1>
-          </div>
+      <div class="highscores">
+        <h1><strong>Highscores</strong></h1>
 
-          <div class="score-p">your final score is 40.</div>
-
-          <div class="form">
-            <form>
-              <label>enter initials:</label>
-              <input type="number" value="number" class="box"/>
-              <input type="submit" value="submit" id="submit"  />
-            </form>
-          </div>
+        <div class="highscore-list">
+          
         </div>
       </div>
     </main>
+    <script>
+      const highscores = JSON.parse(localStorage.getItem("highScores")) || [];
+      function getHighscores(highscores){
+        highscores.forEach(function(highscore) {
+          const {name,score} = highscore;
+          const html =
+          ` 
+          "<div class='highscore'>" 
+            <table>
+            <tr>
+              <th>name</th>
+              <th>score</th>
+            </tr>
+            <tr>
+              <td>${name}</td>
+              <td>${score}</td>
+            </tr>
+          </table>
+        </div> <hr>`
+      },
+      // if (localStorage.getItem('highScores') !== null){
+      //   JSON.parse(localStorage.getItem('highScores'));
+
+      //   const highscore = JSON.parse(highScores)
+
+      // }
+      
+   ) }
+  
+
+
+      const highscoreList = document.querySelector(".highscore-list");
+      function getHighscores(highscores) {
+        highscores.forEach(function(highscore) {
+          const {name,score} = highscore;
+          const html =
+          ` 
+          "<div class='highscore'>" 
+            <table>
+            <tr>
+              <th>name</th>
+              <th>score</th>
+            </tr>
+            <tr>
+              <td>${name}</td>
+              <td>${score}</td>
+            </tr>
+          </table>
+        </div> <br>
+
+          `;
+          highscores.insertAdjacentHTML("afterbegin", html);
+          
+      })
+    }
+    </script>
   </body>
 </html>

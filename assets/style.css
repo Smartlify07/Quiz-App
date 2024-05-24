@@ -3,13 +3,15 @@ h1 {
 }
 .swiper {
   width: 600px;
-  height: 400px;
+  height: 600px;
 }
 #quiz-container {
   max-width: 500px;
   margin: auto;
 }
-
+.hidden{
+  display: none;
+}
 #question {
   font-weight: bold;
 }

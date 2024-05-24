@@ -1,16 +1,23 @@
 let swiper;
 let duration = 51;
-let durationTime  = 5000;
+const durationInterval = 1000;
+let totalScore = 0;
+const addedScore = 10;
+
+const score = document.querySelector('#score');
+const scoreForm = document.querySelector('.score-container form');
+const studentNameInput = document.querySelector('.student-name');
+
 
 const timerElement = document.getElementById("timer");
-const intervalID = setInterval(function() {
+const intervalID = setInterval(function () {
   duration--;
   timerElement.innerHTML = duration;
   if (duration <= 0) {
     clearInterval(intervalID);
     showResults();
   }
-}, 1000);
+}, durationInterval);
 
 
 
@@ -76,8 +83,9 @@ function loadQuestions() {
     <ul id="choices">
      ${options.map((option) => {
       return `<li>${option}</li>`
-    }).join('')}}
+    }).join('')}
     </ul>
+    <span></span>
   </div>
   </li>
 `
@@ -85,117 +93,95 @@ function loadQuestions() {
     swiper = new Swiper('.swiper', {
       // Optional parameters
       speed: 400,
-      // navigation: {
-      //   nextEl: '.swiper-button-next',
-      //   prevEl: '.swiper-button-prev',
-      // },
     });
   }
-  // const listItem = document.innerHTML("li");
-  // listItem.addEventListener("click", handleAnswer)
 }
 function nextQuestion() {
-  if (swiper){
-    swiper.slideNext();
-    
+  if (swiper) {
+    setTimeout(function () {
+      swiper.slideNext();
+    }, 800)
   }
 }
-function checkAnswer(){
+function checkAnswer() {
   const HTMLquestions = document.querySelectorAll(".question-wrapper");
-  HTMLquestions.forEach(function(question, index){
-    question.addEventListener("click", function(event) {
+  const HTMLresults = document.querySelectorAll(".question-wrapper span");
+
+  HTMLquestions.forEach(function (question, index) {
+    const result = document.querySelector(`${question.className} `)
+    question.addEventListener("click", function (event) {
 
       const selectedOption = event.target;
-      if (selectedOption.tagName==="LI") {
-        const selectedOptionText = selectedOption.innerHTML; 
+      if (selectedOption.tagName === "LI") {
+        const selectedOptionText = selectedOption.innerHTML;
         const answerText = questions[index].answer;
+
         if (selectedOptionText === answerText) {
-          nextQuestion()
+          HTMLresults[index].innerHTML = "Correct answer";
+          totalScore += addedScore;
+          
         } else {
           duration -= 10;
-          nextQuestion()
+          HTMLresults[index].innerHTML = "Incorrect answer";
+          
         }
       }
-    
+      if(index=== questions.length -1){
+        showResults();
+      }
+      else{
+        nextQuestion();
+      }
     });
 
   })
 }
-function handleAnswer(event) {
 
-  const selectedOptionText = event.target.innerHTML;
-  const resultMessage = document.getElementById('result');
+function showResults() {
+  clearInterval(intervalID);
+  const scoreContainer = document.querySelector('.score-container');
+  const quiz = document.querySelector('.swiper');
+ 
+  score.innerHTML = totalScore;
+  scoreContainer.classList.remove('hidden');
+  quiz.classList.add('hidden');
+}
 
-  if (selectedOptionText === questions[currentQuestion].options[questions[currentQuestion].correctAnswerIndex]) {
-    resultMessage.textContent = 'Correct!';
-  } else {
-    resultMessage.textContent = 'Incorrect!';
+function storeHighScore(name) {
+  if(!name) return false;
+        const highScores = JSON.parse(localStorage.getItem('highScores'));
+  if (highScores) {
+    const nameExistsIndex = highScores.findIndex(item => item.name === name);
+    if (nameExistsIndex!=-1) {
+      const student = highScores[nameExistsIndex];
+      if (student.score < totalScore) {
+        student.score = totalScore;
+        highScores[nameExistsIndex] = student;
+        localStorage.setItem('highScores', JSON.stringify(highScores));
+      }
+    }
+    else {
+      highScores.push({ name, score: totalScore });
+      localStorage.setItem('highScores', JSON.stringify(highScores));
+    }
   }
-  setTimeout(() => {
-    resultMessage.textContent = '';
-    loadNextQuestion();
-  }, 1000);
-
+  else{
+    localStorage.setItem('highScores', JSON.stringify([
+      { name, score: totalScore }
+    ]));
+  }
+return true;
 }
 
 
-function showResult() {
-  const submitButton = document.getElementById('submit-btn');
-  submitButton.style.display = 'block';
 
-  const container = document.getElementById('quiz-container');
-  container.style.textAlign = 'center';
-  container.innerHTML = '<h2>Congratulations! You have completed the quiz.</h2>';
+scoreForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const studentName = studentNameInput.value;
 
-  container.scrollIntoView({ behavior: 'smooth' });
-
-  let scoresTable = document.getElementById("scores-table");
-
-  // Display high scores/score sheet elements
-
-  // Create table header row       
-  let headerRow = document.createElement("tr");
-
-  let thName = document.createElement("th");
-  thName.textContent = 'Name';
-  headerRow.appendChild(thName);
-
-  let thScore = document.createElement("th");
-  thScore.textContent = 'Score';
-  headerRow.appendChild(thScore);
-
-  scoresTable.appendChild(headerRow);
-
-  // Simulate fetching high scores from an API or storage
-
-  // Mock data - Scores array containing objects with name and score
-
-  const randomScores = [{ name: 'John', score: '2/3' },
-  { name: 'Sarah', score: '3/3' },
-  { name: 'Mike', score: '1/3' }];
-
-  randomScores.forEach(score => {
-
-    let row = document.createElement('tr');
-
-    let tdName = document.createElement('td');
-    tdName.textContent = `${score.name}`;
-
-
-    row.appendChild(tdName);
-
-    let tdScore = document.createElement('td');
-    tdScore.textContent = `${score.score}`;
-
-
-
-    row.appendChild(tdScore);
-
-
-    scoresTable.appendChild(row);
-
-  });
-
-}
+  
+  if (storeHighScore(studentName))location.href = 'highscore.html';
+    l
+});
 loadQuestions();
 checkAnswer();
